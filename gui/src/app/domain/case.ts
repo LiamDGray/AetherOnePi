@@ -6,17 +6,18 @@ export class Case {
   created:Date;
   lastChange:Date;
   sessionList:Session[];
+  topTenList:RateObjectWrapper[]
 }
 
 export class Session {
   intention:string;
   description:string;
   created:Date;
-  analysisResults:AnalysisResult[];
-  broadCastedList:BroadcastedList[];
+  analysisResult:AnalysisResult;
+  broadCasted:Broadcasted;
 }
 
-export class BroadcastedList {
+export class Broadcasted {
   clear:boolean;
   intention:string;
   signature:string;
@@ -28,4 +29,11 @@ export class BroadcastedList {
 
 export class CaseList {
   caseList:Case[];
+}
+
+export class RateObjectWrapper {
+  occurrence:number;
+  overallEnergeticValue:number;
+  overallGV:number;
+  name:string;
 }

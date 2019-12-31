@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "$environment/environment";
 import {Observable} from "rxjs";
 import {AnalysisResult} from "../domain/analysisResult";
+import {Broadcasted} from "../domain/case";
+import {BaseUrlUtility} from "../utilities/BaseUrlUtility";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AetherServerService {
 
-  serverUrl:string = `${environment.serverUrl}:${environment.serverPort}`;
+  serverUrl:string = `${BaseUrlUtility.getBaseUrl()}:${environment.serverPort}`;
 
   constructor(private http: HttpClient) { }
 
@@ -19,5 +21,21 @@ export class AetherServerService {
 
   analyze(rateListName:string):Observable<AnalysisResult> {
     return this.http.get<AnalysisResult>(`${this.serverUrl}/analysis/${rateListName}`);
+  }
+
+  analyzeAreaGrid(rateListName:string):Observable<AnalysisResult> {
+    return this.http.get<AnalysisResult>(`${this.serverUrl}/analysisArea/${rateListName}`);
+  }
+
+  broadcast(broadcasted: Broadcasted):Observable<Broadcasted> {
+    return this.http.post<Broadcasted>(`${this.serverUrl}/broadcasting`, broadcasted);
+  }
+
+  checkGeneralVitality():Observable<number> {
+    return this.http.get<number>(`${this.serverUrl}/analysis/generalVitality`);
+  }
+
+  checkGeneralVitalityForAnalysisResult(analysisResult:AnalysisResult):Observable<AnalysisResult> {
+    return this.http.post<AnalysisResult>(`${this.serverUrl}/analysis/generalVitality`, analysisResult);
   }
 }

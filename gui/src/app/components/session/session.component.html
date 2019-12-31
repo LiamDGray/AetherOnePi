@@ -21,14 +21,18 @@
       <tr>
         <th scope="col">NAME</th>
         <th scope="col">DESCRIPTION</th>
+        <th scope="col">TOP RATES / SIGNATURES</th>
+        <th scope="col">ACTIONS</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let caseObject of cases.caseList">
         <td>{{caseObject.name}}</td>
         <td>{{caseObject.description}}</td>
+        <td>...</td>
         <td>
           <button class="btn btn-success btn-sm" (click)="openCase(caseObject)">SELECT</button>
+          <button class="btn btn-primary btn-sm" (click)="showCase(caseObject, content)" style="margin-left: 1rem">SHOW</button>
           <button class="btn btn-danger btn-sm" (click)="deleteCase(caseObject)" style="margin-left: 1rem">DELETE</button>
         </td>
       </tr>
@@ -36,3 +40,7 @@
     </table>
   </div>
 </div>
+
+<ng-template #content let-modal>
+  <app-case-view *ngIf="selectedCase" [selectedCase]="selectedCase" class="bg-dark text-white"></app-case-view>
+</ng-template>

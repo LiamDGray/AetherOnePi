@@ -1,13 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {AetherOnePiStatus} from "../../domain/AetherOnePiStatus";
-// TODO how to switch environment???
 import {environment} from "$environment/environment";
 import {HttpClient} from "@angular/common/http";
 import polling from 'rx-polling';
 import {ContextService} from "../../services/context.service";
 import {Context} from "../../domain/context";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Session} from "../../domain/case";
+import {ToastrService} from "ngx-toastr";
+import {CasesService} from "../../services/cases.service";
+import {BaseUrlUtility} from "../../utilities/BaseUrlUtility";
 
 @Component({
   selector: 'app-status',
@@ -18,13 +19,15 @@ export class StatusComponent implements OnInit {
 
   aetherOnePiStatus:AetherOnePiStatus;
   context:Context;
-  serverUrl:string = `${environment.serverUrl}:${environment.serverPort}`;
+  serverUrl:string = `${BaseUrlUtility.getBaseUrl()}:${environment.serverPort}`;
   sessionNotes:FormGroup;
 
   constructor(
     private http:HttpClient,
     private contextService:ContextService,
-    private formbuilder: FormBuilder
+    private formbuilder: FormBuilder,
+    private toastr: ToastrService,
+    private caseService: CasesService
   ) { }
 
   ngOnInit() {
@@ -47,13 +50,19 @@ export class StatusComponent implements OnInit {
 
   refreshSessionNotesForm() {
     this.sessionNotes = this.formbuilder.group({
-      intentionOrNotes: ""
+      intentionOrNotes: "",
+      title: ""
     });
   }
 
   saveSessionNotes():void {
 
-    console.log(this.contextService.getCurrentSession());
+    this.contextService.addNewNoteToSession(this.sessionNotes.getRawValue());
+    this.caseService.updateCase(this.contextService.getCase()).subscribe( data => {
+      this.sessionNotes.reset();
+      this.contextService.addNewSession();
+      this.toastr.success('Your session notes are saved!', 'Information');
+    });
   }
 
 }

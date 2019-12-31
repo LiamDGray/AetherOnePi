@@ -1,6 +1,5 @@
 package de.isuret.polos.AetherOnePi.processing.communication;
 
-import lombok.Getter;
 import de.isuret.polos.AetherOnePi.domain.AetherOnePiStatus;
 import de.isuret.polos.AetherOnePi.service.BroadCastService;
 import org.apache.commons.logging.Log;
@@ -10,7 +9,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Status services handling the notification of all clients
@@ -48,25 +48,24 @@ public class StatusNotificationService {
         }
     }
 
-    public void setProgress(Integer progress) throws IOException {
+    public void setProgress2(Integer progress) throws IOException {
 
         status.setProgress(progress);
-        sendStatus();
+        sendStatus2();
     }
 
     public void setHotbitsPackages(Integer siteOfPackages) throws IOException {
         status.setHotbitsPackages(siteOfPackages);
-        sendStatus();
+        sendStatus2();
     }
 
     /**
      * Sends the status to all registered clients
      * @throws IOException
      */
-    public void sendStatus() throws IOException {
+    public void sendStatus2() {
 
         try {
-            logger.info(status);
             String obsoleteClientHost = null;
 
             for (SocketClient client : clients.values()) {
@@ -81,9 +80,7 @@ public class StatusNotificationService {
             if (obsoleteClientHost != null) {
                 removeClient(obsoleteClientHost);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
     }
 
     private void removeClient(String obsoleteClientHost) {
